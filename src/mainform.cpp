@@ -28,48 +28,40 @@ MainForm::MainForm()
         return 0;
     });
 
-    on_message(WM_LBUTTONDOWN, [&](params){
-        SendMessage(hwnd(), WM_NCLBUTTONDOWN, HTCAPTION, 0);
-        return 0;
-    });
+    // 窗口大小相关消息处理
+    WinSizeEventHandler();
 
-    on_message(WM_NCCALCSIZE, [&](params){
-        return 0;
-    });
+    // NC相关消息处理
+    NcEventHandler();
+}
 
-    // The WM_SIZE and WM_MOVE messages are not sent if an application handles the WM_WINDOWPOSCHANGED message
-    on_message(WM_WINDOWPOSCHANGED, [&](wm::windowposchanged p){
+bool MainForm::isWindowMove(const POINT &pt)
+{
+    bool bChanged = setup.position.x != pt.x || setup.position.y != pt.y;
+    if(bChanged)
+    {
+        setup.position = pt;
+        return true;
+    }
 
-        POINT pt = {p.windowpos().x, p.windowpos().y};
-        SIZE size = {p.windowpos().cx, p.windowpos().cy};
+    return false;
+}
 
-        if(isWindowMove(pt))
-        {
-            shadow_.setup.position = pt;
-            SetWindowPos(shadow_.hwnd(), 0, pt.x, pt.y, 0, 0, SWP_NOSIZE | SWP_NOACTIVATE);
-        }
+bool MainForm::isWindowZoom(const SIZE &size)
+{
+    bool bChanged = setup.size.cx != size.cx || setup.size.cy != size.cy;
+    if(bChanged)
+    {
+        setup.size = size;
+        return true;
+    }
 
-        if(isWindowZoom(size))
-        {
-            shadow_.setup.position = pt;
-            shadow_.setup.size = size;
-            shadow_.DrawShadowUI();
-            webview_.resize(size - kBorderPadding);
-        }
+    return false;
+}
 
-        return 0;
-    });
-
-    on_message(WM_GETMINMAXINFO, [&](wm::getminmaxinfo p){
-
-        p.minmaxinfo().ptMinTrackSize = {kWindowWidth, kWindowHeight};
-        p.minmaxinfo().ptMaxPosition = {0, 0};
-
-        RECT rc;
-        ::SystemParametersInfo(SPI_GETWORKAREA, 0, &rc, 0);
-        p.minmaxinfo().ptMaxSize.x = p.minmaxinfo().ptMaxTrackSize.x = rc.right - rc.left;
-        p.minmaxinfo().ptMaxSize.y = p.minmaxinfo().ptMaxTrackSize.y = rc.bottom - rc.top;
-
+void MainForm::NcEventHandler()
+{
+    on_message({WM_NCACTIVATE, WM_NCCALCSIZE}, [&](params){
         return 0;
     });
 
@@ -114,26 +106,41 @@ MainForm::MainForm()
     });
 }
 
-bool MainForm::isWindowMove(const POINT &pt)
+void MainForm::WinSizeEventHandler()
 {
-    bool bChanged = setup.position.x != pt.x || setup.position.y != pt.y;
-    if(bChanged)
-    {
-        setup.position = pt;
-        return true;
-    }
+    // The WM_SIZE and WM_MOVE messages are not sent if an application handles the WM_WINDOWPOSCHANGED message
+    on_message(WM_WINDOWPOSCHANGED, [&](wm::windowposchanged p){
 
-    return false;
-}
+        POINT pt = {p.windowpos().x, p.windowpos().y};
+        SIZE size = {p.windowpos().cx, p.windowpos().cy};
 
-bool MainForm::isWindowZoom(const SIZE &size)
-{
-    bool bChanged = setup.size.cx != size.cx || setup.size.cy != size.cy;
-    if(bChanged)
-    {
-        setup.size = size;
-        return true;
-    }
+        if(isWindowMove(pt))
+        {
+            shadow_.setup.position = pt;
+            SetWindowPos(shadow_.hwnd(), 0, pt.x, pt.y, 0, 0, SWP_NOSIZE | SWP_NOACTIVATE);
+        }
 
-    return false;
+        if(isWindowZoom(size))
+        {
+            shadow_.setup.position = pt;
+            shadow_.setup.size = size;
+            shadow_.DrawShadowUI();
+            webview_.resize(size - kBorderPadding);
+        }
+
+        return 0;
+    });
+
+    on_message(WM_GETMINMAXINFO, [&](wm::getminmaxinfo p){
+
+        p.minmaxinfo().ptMinTrackSize = {kWindowWidth, kWindowHeight};
+        p.minmaxinfo().ptMaxPosition = {0, 0};
+
+        RECT rc;
+        ::SystemParametersInfo(SPI_GETWORKAREA, 0, &rc, 0);
+        p.minmaxinfo().ptMaxSize.x = p.minmaxinfo().ptMaxTrackSize.x = rc.right - rc.left;
+        p.minmaxinfo().ptMaxSize.y = p.minmaxinfo().ptMaxTrackSize.y = rc.bottom - rc.top;
+
+        return 0;
+    });
 }

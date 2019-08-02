@@ -19,6 +19,9 @@ public:
 private:
     bool isWindowMove(const POINT &pt);
     bool isWindowZoom(const SIZE &size);
+
+    void NcEventHandler();
+    void WinSizeEventHandler();
 };
 
 #endif // MAINFORM_H
