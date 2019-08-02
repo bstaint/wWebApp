@@ -7,5 +7,6 @@
 #include "str.h"
 #include "wke.h"
 #include "gdi.h"
+#include "utility.h"
 
 #endif // PRECOMPILED_H

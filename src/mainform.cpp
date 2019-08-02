@@ -21,16 +21,14 @@ MainForm::MainForm()
     setup.position = {5, 5};
 
     on_message(WM_CREATE, [&](params){
-        shadow_.bindWindow(hwnd());
-        shadow_.create(this, 0, setup.position, setup.size);
         webview_.create(this, 0, {0, 0}, setup.size);
+        shadow_.create(this, 0, setup.position, setup.size);
 
         return 0;
     });
 
     // 窗口大小相关消息处理
     WinSizeEventHandler();
-
     // NC相关消息处理
     NcEventHandler();
 }

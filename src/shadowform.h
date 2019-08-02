@@ -6,13 +6,11 @@
 
 class ShadowForm : public wl::window_control
 {
-    Gdiplus::Image m_image;
-    HWND hwnd_;
+    Gdiplus::Image image_;
 
 public:
     ShadowForm();
 
-    void bindWindow(const HWND &hwnd);
     void DrawShadowUI();
 };
 

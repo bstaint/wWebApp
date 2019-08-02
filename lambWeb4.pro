@@ -15,7 +15,8 @@ SOURCES += \
     src/blinkwidget.cpp \
     src/main.cpp \
     src/mainform.cpp \
-    src/shadowform.cpp
+    src/shadowform.cpp \
+    src/utility.cpp
 
 INCLUDEPATH += src/
 

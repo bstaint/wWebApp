@@ -56,12 +56,13 @@ blinkWidget::blinkWidget() :
     FocusEventHandler();
 
     on_message(WM_NCHITTEST, [&](wm::nchittest p){
+
         RECT rc;
         POINT mouse = { p.pos().x, p.pos().y };
+
         GetClientRect(GetParent(hwnd()), &rc);
         ScreenToClient(GetParent(hwnd()), &mouse);
 
-        int ww = rc.right - rc.left;
         int wh = rc.bottom - rc.top;
 
         int frame_size = GetSystemMetrics(SM_CXFRAME) +
