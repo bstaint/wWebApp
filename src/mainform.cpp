@@ -23,7 +23,7 @@ MainForm::MainForm()
     on_message(WM_CREATE, [&](params){
         shadow_.bindWindow(hwnd());
         shadow_.create(this, 0, setup.position, setup.size);
-        webview_.create(this, 0, {0, 0}, setup.size - kBorderPadding);
+        webview_.create(this, 0, {0, 0}, setup.size);
 
         return 0;
     });
