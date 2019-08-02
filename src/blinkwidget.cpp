@@ -42,21 +42,8 @@ blinkWidget::blinkWidget() :
 
         return 0;
     });
-
-    // 鼠标消息处理
-    MouseEventHandler();
-
-    // 绘制消息处理
-    PaintEventHandler();
-
-    // 键盘消息处理
-    KeyEventHandler();
-
-    // 焦点消息处理
-    FocusEventHandler();
-
-    on_message(WM_NCHITTEST, [&](wm::nchittest p){
-
+    
+     on_message(WM_NCHITTEST, [&](wm::nchittest p){
         RECT rc;
         POINT mouse = { p.pos().x, p.pos().y };
 
@@ -75,41 +62,17 @@ blinkWidget::blinkWidget() :
         return HTCLIENT;
     });
 
-    /*
-    on_message(WM_NCHITTEST, [&](wm::nchittest p){
+    // 鼠标消息处理
+    MouseEventHandler();
 
-        int ww = setup.size.cx;
-        int wh = setup.size.cy;
+    // 绘制消息处理
+    PaintEventHandler();
 
-        int frame_size = GetSystemMetrics(SM_CXFRAME) +
-                         GetSystemMetrics(SM_CXPADDEDBORDER);
+    // 键盘消息处理
+    KeyEventHandler();
 
-        int diagonal_width = frame_size * 2 + GetSystemMetrics(SM_CXBORDER);
-
-        if (p.pos().y < frame_size) {
-            if (p.pos().x < diagonal_width)
-                return HTTOPLEFT;
-            if (p.pos().x >= ww - diagonal_width)
-                return HTTOPRIGHT;
-            return HTTOP;
-        }
-
-        if (p.pos().y >= wh - frame_size) {
-            if (p.pos().x < diagonal_width)
-                return HTBOTTOMLEFT;
-            if (p.pos().x >= ww - diagonal_width)
-                return HTBOTTOMRIGHT;
-            return HTBOTTOM;
-        }
-
-        if (p.pos().x < frame_size)
-            return HTLEFT;
-        if (p.pos().x >= ww - frame_size)
-            return HTRIGHT;
-
-        return HTCLIENT;
-    });
-    */
+    // 焦点消息处理
+    FocusEventHandler();
 }
 
 void blinkWidget::OnWkeInit()
