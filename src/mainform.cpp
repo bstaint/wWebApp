@@ -5,7 +5,7 @@
 using namespace wl;
 
 // 边框差额
-static const int kBorderPadding = 1;
+static const int kBorderPadding = 0;
 // 最小窗口大小
 static const int kWindowWidth = 600;
 // 最大窗口大小

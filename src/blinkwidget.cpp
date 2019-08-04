@@ -2,10 +2,10 @@
 #include <sstream>
 #include <cassert>
 #include <fstream>
+#include <iostream>
 
 using namespace wl;
 
-#define LOCAL_URI ".."
 #define APP_SAFE_URL "mb://"
 #define NOT_FOUND_STR "<h2>Not Found</h2>"
 
@@ -21,7 +21,8 @@ jsValue exeCallback(jsExecState es, void *param)
 }
 
 blinkWidget::blinkWidget() :
-    webview_(wkeCreateWebView())
+    webview_(wkeCreateWebView()),
+    zip_("E:/Projects/window/winlamb/lambWeb4/res/ui.zip")
 {
     setup.wndClassEx.lpszClassName = L"MINIBLINK_WIDGET";
     setup.wndClassEx.hCursor = LoadCursor(NULL, IDC_ARROW);
@@ -38,7 +39,8 @@ blinkWidget::blinkWidget() :
 
         wkeResize(webview_, rc.right, rc.bottom);
         wkeMoveToCenter(webview_);
-        wkeLoadURL(webview_, u8"file:///../res/template.html");
+//        wkeLoadURL(webview_, u8"file:///../res/template.html");
+        wkeLoadURL(webview_, u8"mb://ui/template.html");
 
         return 0;
     });
@@ -82,38 +84,62 @@ void blinkWidget::OnWkeInit()
 
     wkeJsBindFunction("exe", exeCallback, this, 1);
 
+//    wkeSetDebugConfig(webview_, "showDevTools", u8"file:///E:/3rdParty/extras/miniblink/front_end/inspector.html");
+
     wkeOnPaintUpdated(webview_, [](wkeWebView webView, void* param, const HDC hdc, int x, int y, int cx, int cy){
             auto ptr = (blinkWidget *)param;
             InvalidateRect(ptr->hwnd(), NULL, false);
             UpdateWindow(ptr->hwnd());
     }, this);
 
-    wkeOnDocumentReady(webview_, [](wkeWebView webView, void* param){
-        wkeShowWindow(webView, true);
+    wkeOnLoadUrlEnd(webview_, [](wkeWebView webView, void* param, const utf8* url, wkeNetJob job, void* buf, int len){
+//        char utf81[100];
+//        wchar_t *str = L"百度一下";
+
+//        int slen = ::WideCharToMultiByte(CP_UTF8, 0, str, -1, NULL, 0, NULL, NULL);
+//        ::WideCharToMultiByte(CP_UTF8, 0, str, -1, &utf81[0], slen, NULL, NULL);
+        const char script[] = "a {\
+        color: red;\
+    }";
+
+        std::vector<char> bytes(len + sizeof(script));
+
+        const char *offset = NULL;
+        if((offset = strstr((const char *)buf, "</style")) != NULL)
+        {
+            int pos = offset - buf;
+            memcpy(&bytes[0], buf, pos);
+            memcpy(&bytes[0] + pos, script, sizeof(script));
+            memcpy(&bytes[0] + pos + sizeof(script), offset, len - pos);
+        }
+
+        wkeNetSetData(job, bytes.data(), bytes.size());
+
     }, this);
 
     /*
-    wkeOnLoadUrlBegin(m_view, [](wkeWebView webView, void* param, const char *url, void *job){
+    wkeOnDocumentReady(webview_, [](wkeWebView webView, void* param){
+        wkeRunJS(webView, u8"document.body.parentNode.style.overflow = \"hidden\";");
+    }, this);
+    */
+
+    wkeOnLoadUrlBegin(webview_, [](wkeWebView webView, void* param, const char *url, void *job){
 
         std::vector<char> data;
 
         if(strncmp(url, APP_SAFE_URL, strlen(APP_SAFE_URL)) == 0)
         {
             blinkWidget *ths = static_cast<blinkWidget *>(param);
-            std::stringstream sstream;
-            sstream << LOCAL_URI << url + (strlen(APP_SAFE_URL) - 1);
-            OutputDebugStringA(sstream.str().c_str());
+            ByteVector& bytes = ths->zip_.getBytes(url + strlen(APP_SAFE_URL));
 
-            ths->readFile(sstream.str(), data);
-            wkeNetSetData(job, data.data(), data.size());
-
+            std::cout << bytes.size() << std::endl;
+            wkeNetSetData(job, bytes.data(), bytes.size());
             return true;
         }
 
         return false;
 
     }, this);
-    */
 }
 
 void blinkWidget::KeyEventHandler()
@@ -209,20 +235,6 @@ void blinkWidget::FocusEventHandler()
         wkeKillFocus(webview_);
         return 0;
     });
-}
-
-void blinkWidget::readFile(const std::string &path, std::vector<char> &data)
-{
-    std::fstream in(path);
-    if(in.is_open())
-    {
-        in.seekg(0, std::ios_base::end);
-        std::streampos size = in.tellg();
-        data.resize(size);
-
-        in.seekg(0, std::ios_base::beg);
-        in.read(&data[0], size);
-    }
 }
 
 void blinkWidget::resize(const SIZE &size)

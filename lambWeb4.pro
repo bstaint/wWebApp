@@ -9,14 +9,16 @@ HEADERS += \
     src/precompiled.h \
     src/shadowform.h \
     src/gdiplushelper.h \
-    src/utility.h
+    src/utility.h \
+    src/zipui.h
 
 SOURCES += \
     src/blinkwidget.cpp \
     src/main.cpp \
     src/mainform.cpp \
     src/shadowform.cpp \
-    src/utility.cpp
+    src/utility.cpp \
+    src/zipui.cpp
 
 INCLUDEPATH += src/
 
@@ -24,5 +26,9 @@ PRECOMPILED_HEADER = src/precompiled.h
 
 LIBS += -lgdiplus
 
+win32-msvc*:QMAKE_CXXFLAGS += /utf-8
+
+include(E:/3rdParty/parser/zlib.pri)
+include(E:/3rdParty/parser/minizip.pri)
 include(E:/3rdParty/gui/winlamb.pri)
 include(E:/3rdParty/extras/miniblink.pri)

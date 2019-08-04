@@ -4,15 +4,17 @@
 #include "precompiled.h"
 #include <string>
 #include <vector>
+#include "zipui.h"
 
 class blinkWidget : public wl::window_control
 {
     wkeWebView webview_;
 
+    ZipUi zip_;
+
 public:
     blinkWidget();
 
-    void readFile(const std::string &path, std::vector<char>& data);
     void resize(const SIZE &size);
 
 private:

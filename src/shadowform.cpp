@@ -33,10 +33,13 @@ void ShadowForm::DrawShadowUI()
 
     Graphics g(overlayDC);
 
+    g.SetInterpolationMode(InterpolationModeNearestNeighbor);
+    g.SetPixelOffsetMode(PixelOffsetModeHalf);
+
     g.DrawImage(&image_, 0, 0, size.cx, size.cy);
 //    g.DrawImage(&image_, setup.position.x + setup.size.cx - 5, 0, 792, 0, 3, setup.size.cy, Gdiplus::Unit::UnitPixel);
 
-    BLENDFUNCTION bf = { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA };
+    BLENDFUNCTION bf = { AC_SRC_OVER, 0, 200, AC_SRC_ALPHA };
 
     auto ret = UpdateLayeredWindow(hwnd(), NULL, &pos, &size, overlayDC,
         &zero, 0, &bf, ULW_ALPHA);
