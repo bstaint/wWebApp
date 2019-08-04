@@ -58,6 +58,7 @@ blinkWidget::blinkWidget() :
                          GetSystemMetrics(SM_CXPADDEDBORDER);
 
         if (mouse.y >= wh - frame_size) {
+            // 将WM_NCHITTEST抛给父窗口处理
             return HTTRANSPARENT;
         }
 
@@ -84,7 +85,8 @@ void blinkWidget::OnWkeInit()
 
     wkeJsBindFunction("exe", exeCallback, this, 1);
 
-//    wkeSetDebugConfig(webview_, "showDevTools", u8"file:///E:/3rdParty/extras/miniblink/front_end/inspector.html");
+    // 打开DevTools
+    // wkeSetDebugConfig(webview_, "showDevTools", u8"file:///E:/3rdParty/extras/miniblink/front_end/inspector.html");
 
     wkeOnPaintUpdated(webview_, [](wkeWebView webView, void* param, const HDC hdc, int x, int y, int cx, int cy){
             auto ptr = (blinkWidget *)param;
@@ -92,12 +94,9 @@ void blinkWidget::OnWkeInit()
             UpdateWindow(ptr->hwnd());
     }, this);
 
+    /**
+    // 得在wkeOnLoadUrlBegin中调用wkeNetSetData才会触发
     wkeOnLoadUrlEnd(webview_, [](wkeWebView webView, void* param, const utf8* url, wkeNetJob job, void* buf, int len){
-//        char utf81[100];
-//        wchar_t *str = L"百度一下";
-
-//        int slen = ::WideCharToMultiByte(CP_UTF8, 0, str, -1, NULL, 0, NULL, NULL);
-//        ::WideCharToMultiByte(CP_UTF8, 0, str, -1, &utf81[0], slen, NULL, NULL);
         const char script[] = "a {\
         color: red;\
     }";
@@ -116,6 +115,7 @@ void blinkWidget::OnWkeInit()
         wkeNetSetData(job, bytes.data(), bytes.size());
 
     }, this);
+    */
 
     /*
     wkeOnDocumentReady(webview_, [](wkeWebView webView, void* param){
@@ -138,7 +138,6 @@ void blinkWidget::OnWkeInit()
         }
 
         return false;
-
     }, this);
 }
 
