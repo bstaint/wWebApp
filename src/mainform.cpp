@@ -27,11 +27,10 @@ MainForm::MainForm()
         return 0;
     });
 
+    // webView首次加载完毕发送该消息
     on_message(CM_READY_SHOW, [&](params){
         ShowWindow(hwnd(), SW_SHOW);
         ShowWindow(shadow_.hwnd(), SW_SHOW);
-        OutputDebugString(L"sadfasdf");
-
         return 0;
     });
 

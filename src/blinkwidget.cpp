@@ -102,7 +102,7 @@ void blinkWidget::OnWkeInit()
     // 打开DevTools
 //    wkeSetDebugConfig(webview_, "showDevTools", u8"file:///E:/3rdParty/extras/miniblink/front_end/inspector.html");
 
-    wkeOnLoadUrlBegin(webview_, [](wkeWebView webView, void* param, const char *url, void *job){
+    wkeOnLoadUrlBegin(webview_, [](wkeWebView, void* param, const char *url, void *job){
 
         std::vector<char> data;
 
@@ -118,13 +118,13 @@ void blinkWidget::OnWkeInit()
         return false;
     }, this);
 
-    wkeOnPaintUpdated(webview_, [](wkeWebView webView, void* param, const HDC hdc, int x, int y, int cx, int cy){
+    wkeOnPaintUpdated(webview_, [](wkeWebView, void* param, const HDC, int, int, int, int){
             auto ptr = (blinkWidget *)param;
             InvalidateRect(ptr->hwnd(), NULL, false);
             UpdateWindow(ptr->hwnd());
     }, this);
 
-    wkeOnDocumentReady(webview_, [](wkeWebView webView, void* param){
+    wkeOnDocumentReady(webview_, [](wkeWebView, void* param){
         std::call_once(ready_flag, [param](){
             HWND hwnd = ::GetParent(static_cast<blinkWidget *>(param)->hwnd());
             PostMessage(hwnd, CM_READY_SHOW, 0, 0);
