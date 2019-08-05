@@ -8,5 +8,9 @@
 #include "wke.h"
 #include "gdi.h"
 #include "utility.h"
+#include <cassert>
+#include <iostream>
+#include <sstream>
+#include <fstream>
 
 #endif // PRECOMPILED_H

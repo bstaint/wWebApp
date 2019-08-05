@@ -1,9 +1,6 @@
 #include "blinkwidget.h"
-#include <sstream>
-#include <cassert>
-#include <fstream>
-#include <iostream>
 #include "utility.h"
+#include "callback.h"
 
 using namespace wl;
 
@@ -11,27 +8,6 @@ using namespace wl;
 #define NOT_FOUND_STR "<h2>Not Found</h2>"
 
 std::once_flag blinkWidget::ready_flag;
-
-jsValue exeCallback(jsExecState es, void *param)
-{
-    assert(param != nullptr);
-    HWND hwnd = ::GetParent(static_cast<blinkWidget *>(param)->hwnd());
-
-    jsValue arg0 = jsArg(es, 0);
-    const utf8* op = jsToTempString(es, arg0);
-
-    if(strcmp(op, u8"mousedown") == 0)
-    {
-        PostMessage(hwnd, WM_NCLBUTTONDOWN, HTCAPTION, 0);
-        ReleaseCapture();
-    }
-    else if(strcmp(op, u8"close") == 0)
-    {
-        PostQuitMessage(0);
-    }
-
-    return jsUndefined();
-}
 
 blinkWidget::blinkWidget() :
     webview_(wkeCreateWebView()),
@@ -98,6 +74,7 @@ void blinkWidget::OnWkeInit()
     wkeSetNavigationToNewWindowEnable(webview_, false);
 
     wkeJsBindFunction("exe", exeCallback, this, 1);
+    wkeJsBindFunction("url", urlCallback, this, 1);
 
     // 打开DevTools
 //    wkeSetDebugConfig(webview_, "showDevTools", u8"file:///E:/3rdParty/extras/miniblink/front_end/inspector.html");
@@ -219,10 +196,17 @@ void blinkWidget::MouseEventHandler()
     on_message(WM_SETCURSOR, [&](wm::setcursor){
 //        TODO: 等待完善，参考demo_src中代码
         HCURSOR hCur = NULL;
-        if(cursor_type_ == WkeCursorInfoPointer)
+        switch(cursor_type_)
+        {
+        case WkeCursorInfoPointer:
             hCur = ::LoadCursor(NULL, IDC_ARROW);
-        else if(cursor_type_ == WkeCursorInfoHand)
+            break;
+        case WkeCursorInfoHand:
             hCur = ::LoadCursor(NULL, IDC_HAND);
+            break;
+        default:
+            hCur = ::LoadCursor(NULL, IDC_ARROW);
+        }
 
         if(hCur)
             ::SetCursor(hCur);

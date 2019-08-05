@@ -1,6 +1,5 @@
 #include "mainform.h"
 #include "utility.h"
-#include <sstream>
 
 using namespace wl;
 

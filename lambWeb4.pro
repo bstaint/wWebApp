@@ -4,6 +4,7 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 HEADERS += \
+    src/callback.h \
     src/blinkwidget.h \
     src/mainform.h \
     src/precompiled.h \
@@ -13,6 +14,7 @@ HEADERS += \
     src/zipui.h
 
 SOURCES += \
+    src/callback.cpp \
     src/blinkwidget.cpp \
     src/main.cpp \
     src/mainform.cpp \
@@ -32,3 +34,4 @@ include(E:/3rdParty/parser/zlib.pri)
 include(E:/3rdParty/parser/minizip.pri)
 include(E:/3rdParty/gui/winlamb.pri)
 include(E:/3rdParty/extras/miniblink.pri)
+include(E:/3rdParty/debug/vld.pri)
