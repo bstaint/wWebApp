@@ -14,6 +14,8 @@ class blinkWidget : public wl::window_control
     ZipUi zip_;
     static std::once_flag ready_flag;
 
+    int cursor_type_;
+
 public:
     blinkWidget();
 

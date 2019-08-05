@@ -35,10 +35,10 @@ jsValue exeCallback(jsExecState es, void *param)
 
 blinkWidget::blinkWidget() :
     webview_(wkeCreateWebView()),
-    zip_("E:/Projects/window/winlamb/lambWeb4/res/ui.zip")
+    zip_("E:/Projects/window/winlamb/lambWeb4/res/ui.zip"),
+    cursor_type_(WkeCursorInfoPointer)
 {
     setup.wndClassEx.lpszClassName = L"MINIBLINK_WIDGET";
-    setup.wndClassEx.hCursor = LoadCursor(NULL, IDC_ARROW);
     setup.style |= ws::CHILD | ws::VISIBLE;
 #ifdef _DEBUG
 //    setup.exStyle |= wsx::CLIENTEDGE;
@@ -51,7 +51,7 @@ blinkWidget::blinkWidget() :
         ::GetClientRect(hwnd(), &rc);
 
         wkeResize(webview_, rc.right, rc.bottom);
-        wkeMoveToCenter(webview_);
+//        wkeMoveToCenter(webview_);
 //        wkeLoadURL(webview_, u8"file:///../res/template.html");
 //        wkeLoadURL(webview_, u8"http://www.baidu.com");
         wkeLoadURL(webview_, u8"mb://ui/template.html");
@@ -192,6 +192,9 @@ void blinkWidget::MouseEventHandler()
                    || p.message == WM_MBUTTONUP
                    || p.message == WM_RBUTTONUP) {
             ReleaseCapture();
+        } else if(p.message == WM_MOUSEMOVE)
+        {
+            cursor_type_ = wkeGetCursorInfoType(webview_);
         }
 
         unsigned int flags = 0;
@@ -209,6 +212,20 @@ void blinkWidget::MouseEventHandler()
             flags |= WKE_RBUTTON;
 
         wkeFireMouseEvent(webview_, p.message, p.pos().x, p.pos().y, flags);
+
+        return 0;
+    });
+
+    on_message(WM_SETCURSOR, [&](wm::setcursor){
+//        TODO: 等待完善，参考demo_src中代码
+        HCURSOR hCur = NULL;
+        if(cursor_type_ == WkeCursorInfoPointer)
+            hCur = ::LoadCursor(NULL, IDC_ARROW);
+        else if(cursor_type_ == WkeCursorInfoHand)
+            hCur = ::LoadCursor(NULL, IDC_HAND);
+
+        if(hCur)
+            ::SetCursor(hCur);
 
         return 0;
     });

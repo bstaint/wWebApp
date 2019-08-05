@@ -14,11 +14,15 @@ static const int kWindowHeight = 400;
 MainForm::MainForm()
 {
     setup.wndClassEx.lpszClassName = L"MainFromClass";
-    setup.wndClassEx.hCursor = LoadCursor(NULL, IDC_ARROW);
     // WS_THICKFRAME 有默认WM_SETCURSOR处理操作
     setup.style |= (ws)WS_THICKFRAME;
     setup.size = {kWindowWidth, kWindowHeight};
-    setup.position = {5, 5};
+
+    RECT rc;
+    GetClientRect(GetDesktopWindow(), &rc);
+    int x = (rc.right - rc.left) / 2 - setup.size.cx / 2;
+    int y = (rc.bottom - rc.top) / 2 - setup.size.cy / 2;
+    setup.position = {x, y};
 
     on_message(WM_CREATE, [&](wm::create){
         webview_.create(this, 0, {0, 0}, setup.size);
@@ -67,6 +71,10 @@ bool MainForm::isWindowZoom(const SIZE &size)
 void MainForm::NcEventHandler()
 {
     on_message(WM_NCCALCSIZE, [&](params){
+        return 0;
+    });
+
+    on_message(WM_NCACTIVATE, [&](params){
         return 0;
     });
 
