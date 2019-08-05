@@ -3,11 +3,14 @@
 #include <cassert>
 #include <fstream>
 #include <iostream>
+#include "utility.h"
 
 using namespace wl;
 
 #define APP_SAFE_URL "mb://"
 #define NOT_FOUND_STR "<h2>Not Found</h2>"
+
+std::once_flag blinkWidget::ready_flag;
 
 jsValue exeCallback(jsExecState es, void *param)
 {
@@ -50,6 +53,7 @@ blinkWidget::blinkWidget() :
         wkeResize(webview_, rc.right, rc.bottom);
         wkeMoveToCenter(webview_);
 //        wkeLoadURL(webview_, u8"file:///../res/template.html");
+//        wkeLoadURL(webview_, u8"http://www.baidu.com");
         wkeLoadURL(webview_, u8"mb://ui/template.html");
 
         return 0;
@@ -96,7 +100,7 @@ void blinkWidget::OnWkeInit()
     wkeJsBindFunction("exe", exeCallback, this, 1);
 
     // 打开DevTools
-    // wkeSetDebugConfig(webview_, "showDevTools", u8"file:///E:/3rdParty/extras/miniblink/front_end/inspector.html");
+//    wkeSetDebugConfig(webview_, "showDevTools", u8"file:///E:/3rdParty/extras/miniblink/front_end/inspector.html");
 
     wkeOnLoadUrlBegin(webview_, [](wkeWebView webView, void* param, const char *url, void *job){
 
@@ -120,34 +124,12 @@ void blinkWidget::OnWkeInit()
             UpdateWindow(ptr->hwnd());
     }, this);
 
-    /*
-    // 得在wkeOnLoadUrlBegin中调用wkeNetSetData才会触发
-    wkeOnLoadUrlEnd(webview_, [](wkeWebView webView, void* param, const utf8* url, wkeNetJob job, void* buf, int len){
-        const char script[] = "a {\
-        color: red;\
-    }";
-
-        std::vector<char> bytes(len + sizeof(script));
-
-        const char *offset = NULL;
-        if((offset = strstr((const char *)buf, "</style")) != NULL)
-        {
-            int pos = offset - buf;
-            memcpy(&bytes[0], buf, pos);
-            memcpy(&bytes[0] + pos, script, sizeof(script));
-            memcpy(&bytes[0] + pos + sizeof(script), offset, len - pos);
-        }
-
-        wkeNetSetData(job, bytes.data(), bytes.size());
-
-    }, this);
-    */
-
-    /*
     wkeOnDocumentReady(webview_, [](wkeWebView webView, void* param){
-        wkeRunJS(webView, u8"document.body.parentNode.style.overflow = \"hidden\";");
+        std::call_once(ready_flag, [param](){
+            HWND hwnd = ::GetParent(static_cast<blinkWidget *>(param)->hwnd());
+            PostMessage(hwnd, CM_READY_SHOW, 0, 0);
+        });
     }, this);
-    */
 }
 
 void blinkWidget::KeyEventHandler()

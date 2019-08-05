@@ -4,6 +4,7 @@
 #include "precompiled.h"
 #include <string>
 #include <vector>
+#include <mutex>
 #include "zipui.h"
 
 class blinkWidget : public wl::window_control
@@ -11,6 +12,7 @@ class blinkWidget : public wl::window_control
     wkeWebView webview_;
 
     ZipUi zip_;
+    static std::once_flag ready_flag;
 
 public:
     blinkWidget();

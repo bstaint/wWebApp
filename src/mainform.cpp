@@ -23,6 +23,15 @@ MainForm::MainForm()
     on_message(WM_CREATE, [&](wm::create){
         webview_.create(this, 0, {0, 0}, setup.size);
         shadow_.create(this, 0, setup.position, setup.size);
+        ShowWindow(shadow_.hwnd(), SW_HIDE);
+        return 0;
+    });
+
+    on_message(CM_READY_SHOW, [&](params){
+        ShowWindow(hwnd(), SW_SHOW);
+        ShowWindow(shadow_.hwnd(), SW_SHOW);
+        OutputDebugString(L"sadfasdf");
+
         return 0;
     });
 

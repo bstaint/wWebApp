@@ -16,6 +16,8 @@ class MainForm final : public wl::window_main
 public:
     MainForm();
 
+    void OnReadyShow();
+
 private:
     bool isWindowMove(const POINT &pt);
     bool isWindowZoom(const SIZE &size);
