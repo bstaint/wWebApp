@@ -20,10 +20,9 @@ MainForm::MainForm()
     setup.size = {kWindowWidth, kWindowHeight};
     setup.position = {5, 5};
 
-    on_message(WM_CREATE, [&](params){
+    on_message(WM_CREATE, [&](wm::create){
         webview_.create(this, 0, {0, 0}, setup.size);
         shadow_.create(this, 0, setup.position, setup.size);
-
         return 0;
     });
 
@@ -59,7 +58,7 @@ bool MainForm::isWindowZoom(const SIZE &size)
 
 void MainForm::NcEventHandler()
 {
-    on_message({WM_NCACTIVATE, WM_NCCALCSIZE}, [&](params){
+    on_message(WM_NCCALCSIZE, [&](params){
         return 0;
     });
 

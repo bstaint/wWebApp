@@ -24,7 +24,7 @@ int ZipUi::readFromZip(ByteVector &bytes)
 void ZipUi::readFromFile(const std::string &path)
 {
     std::streampos size;
-    std::ifstream in(path);
+    std::ifstream in(path, std::ios::binary);
 
     in.seekg(0, std::ios::end);
     size = in.tellg();
@@ -32,6 +32,7 @@ void ZipUi::readFromFile(const std::string &path)
 
     local_.resize(size);
     in.read(local_.data(), size);
+//    local_[local_.size() - 1] = '\0';
 }
 
 int ZipUi::readBytes(ByteVector &bytes, uint32_t size)
@@ -71,7 +72,7 @@ ByteVector &ZipUi::getBytes(const std::string &path)
 {
     int ret = MZ_OK;
 
-#if _DEBUG
+#if 1
     int pos = path_.rfind('/');
     if(pos != std::string::npos)
     {
