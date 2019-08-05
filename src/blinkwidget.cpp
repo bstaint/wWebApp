@@ -14,8 +14,18 @@ jsValue exeCallback(jsExecState es, void *param)
     assert(param != nullptr);
     HWND hwnd = ::GetParent(static_cast<blinkWidget *>(param)->hwnd());
 
-    ReleaseCapture();
-    SendMessage(hwnd, WM_NCLBUTTONDOWN, HTCAPTION, 0);
+    jsValue arg0 = jsArg(es, 0);
+    const utf8* op = jsToTempString(es, arg0);
+
+    if(strcmp(op, u8"mousedown") == 0)
+    {
+        PostMessage(hwnd, WM_NCLBUTTONDOWN, HTCAPTION, 0);
+        ReleaseCapture();
+    }
+    else if(strcmp(op, u8"close") == 0)
+    {
+        PostQuitMessage(0);
+    }
 
     return jsUndefined();
 }
@@ -57,8 +67,8 @@ blinkWidget::blinkWidget() :
         int frame_size = GetSystemMetrics(SM_CXFRAME) +
                          GetSystemMetrics(SM_CXPADDEDBORDER);
 
+        // 将WM_NCHITTEST抛给父窗口处理
         if (mouse.y >= wh - frame_size) {
-            // 将WM_NCHITTEST抛给父窗口处理
             return HTTRANSPARENT;
         }
 
@@ -88,13 +98,29 @@ void blinkWidget::OnWkeInit()
     // 打开DevTools
     // wkeSetDebugConfig(webview_, "showDevTools", u8"file:///E:/3rdParty/extras/miniblink/front_end/inspector.html");
 
+    wkeOnLoadUrlBegin(webview_, [](wkeWebView webView, void* param, const char *url, void *job){
+
+        std::vector<char> data;
+
+        if(strncmp(url, APP_SAFE_URL, strlen(APP_SAFE_URL)) == 0)
+        {
+            blinkWidget *ths = static_cast<blinkWidget *>(param);
+            ByteVector& bytes = ths->zip_.getBytes(url + strlen(APP_SAFE_URL));
+
+            wkeNetSetData(job, bytes.data(), bytes.size());
+            return true;
+        }
+
+        return false;
+    }, this);
+
     wkeOnPaintUpdated(webview_, [](wkeWebView webView, void* param, const HDC hdc, int x, int y, int cx, int cy){
             auto ptr = (blinkWidget *)param;
             InvalidateRect(ptr->hwnd(), NULL, false);
             UpdateWindow(ptr->hwnd());
     }, this);
 
-    /**
+    /*
     // 得在wkeOnLoadUrlBegin中调用wkeNetSetData才会触发
     wkeOnLoadUrlEnd(webview_, [](wkeWebView webView, void* param, const utf8* url, wkeNetJob job, void* buf, int len){
         const char script[] = "a {\
@@ -122,23 +148,6 @@ void blinkWidget::OnWkeInit()
         wkeRunJS(webView, u8"document.body.parentNode.style.overflow = \"hidden\";");
     }, this);
     */
-
-    wkeOnLoadUrlBegin(webview_, [](wkeWebView webView, void* param, const char *url, void *job){
-
-        std::vector<char> data;
-
-        if(strncmp(url, APP_SAFE_URL, strlen(APP_SAFE_URL)) == 0)
-        {
-            blinkWidget *ths = static_cast<blinkWidget *>(param);
-            ByteVector& bytes = ths->zip_.getBytes(url + strlen(APP_SAFE_URL));
-
-            std::cout << bytes.size() << std::endl;
-            wkeNetSetData(job, bytes.data(), bytes.size());
-            return true;
-        }
-
-        return false;
-    }, this);
 }
 
 void blinkWidget::KeyEventHandler()
