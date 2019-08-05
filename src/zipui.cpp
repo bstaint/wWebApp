@@ -25,6 +25,9 @@ void ZipUi::readFromFile(const std::string &path)
 {
 //    std::streampos size;
     std::ifstream in(path, std::ios::binary);
+    local_.resize(0); // 重置vector大小
+
+    if(!in.is_open()) return;
 
     in.seekg(0, std::ios::end);
     unsigned int size = in.tellg();
@@ -75,7 +78,6 @@ ByteVector &ZipUi::getBytes(const std::string &path)
     {
         std::stringstream sstream;
         sstream << path_.substr(0, pos + 1) << path;
-
         readFromFile(sstream.str());
         return local_;
     }
