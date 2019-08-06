@@ -13,4 +13,5 @@ wWebApp是为了学习miniblink所写。
  3. 支持从zip中加载html资源文件
 
 截图：
+
 ![enter image description here](https://raw.githubusercontent.com/bstaint/wWebApp/master/screenshot.png)
