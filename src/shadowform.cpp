@@ -49,3 +49,16 @@ void ShadowForm::DrawShadowUI()
     DeleteObject(overlayBitmap);
     DeleteDC(overlayDC);
 }
+
+void ShadowForm::move(POINT &pt)
+{
+    setup.position = pt;
+    SetWindowPos(hwnd(), 0, pt.x, pt.y, 0, 0, SWP_NOSIZE | SWP_NOACTIVATE);
+}
+
+void ShadowForm::zoom(POINT& pt, SIZE& size)
+{
+    setup.position = pt;
+    setup.size = size;
+    DrawShadowUI();
+}

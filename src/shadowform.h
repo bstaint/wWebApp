@@ -8,10 +8,14 @@ class ShadowForm : public wl::window_control
 {
     Gdiplus::Image image_;
 
+private:
+    void DrawShadowUI();
+
 public:
     ShadowForm();
 
-    void DrawShadowUI();
+    void move(POINT& pt);
+    void zoom(POINT& pt, SIZE &size);
 };
 
 #endif // SHADOWFORM_H

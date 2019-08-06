@@ -122,16 +122,11 @@ void MainForm::WinSizeEventHandler()
         SIZE size = {p.windowpos().cx, p.windowpos().cy};
 
         if(isWindowMove(pt))
-        {
-            shadow_.setup.position = pt;
-            SetWindowPos(shadow_.hwnd(), 0, pt.x, pt.y, 0, 0, SWP_NOSIZE | SWP_NOACTIVATE);
-        }
+            shadow_.move(pt);
 
         if(isWindowZoom(size))
         {
-            shadow_.setup.position = pt;
-            shadow_.setup.size = size;
-            shadow_.DrawShadowUI();
+            shadow_.zoom(pt, size);
             webview_.resize(size);
         }
 
