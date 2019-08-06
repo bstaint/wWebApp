@@ -13,4 +13,6 @@ POINT operator+(POINT const & L, int const & R);
 
 POINT operator-(POINT const & L, int const & R);
 
+POINT getWndCenter(HWND hwnd);
+
 #endif // UTILITY_H

@@ -17,11 +17,8 @@ MainForm::MainForm()
     setup.style |= (ws)WS_THICKFRAME;
     setup.size = {kWindowWidth, kWindowHeight};
 
-    RECT rc;
-    GetClientRect(GetDesktopWindow(), &rc);
-    int x = (rc.right - rc.left) / 2 - setup.size.cx / 2;
-    int y = (rc.bottom - rc.top) / 2 - setup.size.cy / 2;
-    setup.position = {x, y};
+    POINT pt = getWndCenter(GetDesktopWindow());
+    setup.position = {pt.x - kWindowWidth/2, pt.y - kWindowHeight/2};
 
     on_message(WM_CREATE, [&](wm::create){
         webview_.create(this, 0, {0, 0}, setup.size);
