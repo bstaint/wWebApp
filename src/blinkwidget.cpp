@@ -4,14 +4,11 @@
 
 using namespace wl;
 
-#define APP_SAFE_URL "mb://"
-#define NOT_FOUND_STR "<h2>Not Found</h2>"
-
-std::once_flag blinkWidget::ready_flag;
+std::once_flag blinkWidget::s_ready_flag;
 
 blinkWidget::blinkWidget() :
     webview_(wkeCreateWebView()),
-    zip_("E:/Projects/window/winlamb/lambWeb4/res/ui.zip"),
+    zip_("../res/ui.zip"),
     cursor_type_(WkeCursorInfoPointer)
 {
     setup.wndClassEx.lpszClassName = L"MINIBLINK_WIDGET";
@@ -80,9 +77,7 @@ void blinkWidget::OnWkeInit()
 //    wkeSetDebugConfig(webview_, "showDevTools", u8"file:///E:/3rdParty/extras/miniblink/front_end/inspector.html");
 
     wkeOnLoadUrlBegin(webview_, [](wkeWebView, void* param, const char *url, void *job){
-
-        std::vector<char> data;
-
+        // 判断URL是否为mb://开头
         if(strncmp(url, APP_SAFE_URL, strlen(APP_SAFE_URL)) == 0)
         {
             blinkWidget *ths = static_cast<blinkWidget *>(param);
@@ -91,7 +86,6 @@ void blinkWidget::OnWkeInit()
             wkeNetSetData(job, bytes.data(), bytes.size());
             return true;
         }
-
         return false;
     }, this);
 
@@ -102,7 +96,7 @@ void blinkWidget::OnWkeInit()
     }, this);
 
     wkeOnDocumentReady(webview_, [](wkeWebView, void* param){
-        std::call_once(ready_flag, [param](){
+        std::call_once(s_ready_flag, [param](){
             HWND hwnd = ::GetParent(static_cast<blinkWidget *>(param)->hwnd());
             PostMessage(hwnd, CM_READY_SHOW, 0, 0);
         });
@@ -111,6 +105,11 @@ void blinkWidget::OnWkeInit()
 
 void blinkWidget::KeyEventHandler()
 {
+    // 无法接收键盘消息需要处理WM_GETDLGCODE
+    on_message(WM_GETDLGCODE, [&](params){
+        return DLGC_WANTARROWS | DLGC_WANTALLKEYS | DLGC_WANTCHARS;
+    });
+
     on_message({WM_KEYDOWN, WM_KEYUP, WM_CHAR}, [&](wm::keydown p){
 
         unsigned int flags = 0;
@@ -134,11 +133,6 @@ void blinkWidget::KeyEventHandler()
         }
 
         return 0;
-    });
-
-    // 无法接收键盘消息需要处理WM_GETDLGCODE
-    on_message(WM_GETDLGCODE, [&](params){
-        return DLGC_WANTARROWS | DLGC_WANTALLKEYS | DLGC_WANTCHARS;
     });
 }
 

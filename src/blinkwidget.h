@@ -7,12 +7,15 @@
 #include <mutex>
 #include "zipui.h"
 
+#define APP_SAFE_URL "mb://"
+#define NOT_FOUND_STR "<h2>Not Found</h2>"
+
 class blinkWidget : public wl::window_control
 {
     wkeWebView webview_;
 
     ZipUi zip_;
-    static std::once_flag ready_flag;
+    static std::once_flag s_ready_flag;
 
     int cursor_type_;
 
