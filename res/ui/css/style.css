@@ -1,0 +1,19 @@
+html, body, #app, .el-container{
+    padding: 0px;
+    margin: 0px;
+    height: 100%;
+}
+
+.el-header {
+    padding: 0;
+}
+
+ul.el-menu-vertical-demo {
+    height: 100%;
+}
+
+span.sys-btn {
+    color: white;
+    cursor: pointer;
+    font-size: 35px;
+}
