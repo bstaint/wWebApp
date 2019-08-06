@@ -3,8 +3,6 @@
 
 using namespace wl;
 
-// 边框差额
-static const int kBorderPadding = 0;
 // 最小窗口大小
 static const int kWindowWidth = 600;
 // 最大窗口大小
@@ -134,7 +132,7 @@ void MainForm::WinSizeEventHandler()
             shadow_.setup.position = pt;
             shadow_.setup.size = size;
             shadow_.DrawShadowUI();
-            webview_.resize(size - kBorderPadding);
+            webview_.resize(size);
         }
 
         return 0;
