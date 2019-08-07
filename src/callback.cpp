@@ -10,14 +10,13 @@ jsValue exeCallback(jsExecState es, void *param)
     jsValue arg0 = jsArg(es, 0);
     const utf8* op = jsToTempString(es, arg0);
 
-    if(strcmp(op, u8"mousedown") == 0)
-    {
+    if(strcmp(op, u8"mousedown") == 0) {
         PostMessage(hwnd, WM_NCLBUTTONDOWN, HTCAPTION, 0);
         ReleaseCapture();
-    }
-    else if(strcmp(op, u8"quit") == 0)
-    {
+    } else if(strcmp(op, u8"quit") == 0) {
         PostQuitMessage(0);
+    } else if(strcmp(op, u8"minimize") == 0) {
+        ShowWindow(hwnd, SW_MINIMIZE);
     }
 
     return jsUndefined();

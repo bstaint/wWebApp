@@ -13,7 +13,7 @@
   <script src="./js/index.js"></script>
 </head>
 <body>
-  <div id="app">
+  <div id="app" onselectstart="return false;">
     <el-container>
       <el-header @mousedown.native="onSysTitleMove">
         <el-menu 
@@ -30,7 +30,7 @@
             <el-menu-item index="2-1">选项1</el-menu-item>
           </el-submenu>
           <el-menu-item index="3" disabled>消息中心</el-menu-item>
-           <span index="4" id="minimize" class="sys-btn">
+           <span index="4" id="minimize" class="sys-btn" @click="exe('minimize')">
                 <i class="el-icon-minus"></i>
            </span>
            <span index="5" id="close" class="sys-btn" @click="exe('quit')">
