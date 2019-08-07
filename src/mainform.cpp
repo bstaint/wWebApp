@@ -4,9 +4,9 @@
 using namespace wl;
 
 // 最小窗口大小
-static const int kWindowWidth = 650;
+static const int kWindowWidth = 600;
 // 最大窗口大小
-static const int kWindowHeight = 440;
+static const int kWindowHeight = 400;
 
 MainForm::MainForm()
 {

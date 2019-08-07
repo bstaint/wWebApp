@@ -8,6 +8,9 @@ class ShadowForm : public wl::window_control
 {
     Gdiplus::Image image_;
 
+    int width_;
+    int height_;
+
 private:
     void DrawShadowUI();
 

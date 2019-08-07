@@ -4,10 +4,10 @@
 using namespace wl;
 using namespace Gdiplus;
 
-static const int kShadowWidth = 6;
-
 ShadowForm::ShadowForm() :
-    image_(L"../res/shadow.png")
+    image_(L"../res/shadow.png"),
+    width_(6),
+    height_(5)
 {
     setup.wndClassEx.lpszClassName = L"ShadowFromClass";
     setup.style = ws::POPUP | ws::VISIBLE | ws::DISABLED;
@@ -23,7 +23,7 @@ void ShadowForm::DrawShadowUI()
 {
     POINT zero = { 0, 0 };
     POINT pos = setup.position;
-    SIZE size = setup.size + kShadowWidth;
+    SIZE size = {setup.size.cx + width_, setup.size.cy + height_};
 
     HDC screenDC = GetDC(NULL);
 
@@ -37,7 +37,6 @@ void ShadowForm::DrawShadowUI()
     g.SetPixelOffsetMode(PixelOffsetModeHalf);
 
     g.DrawImage(&image_, 0, 0, size.cx, size.cy);
-//    g.DrawImage(&image_, setup.position.x + setup.size.cx - 5, 0, 792, 0, 3, setup.size.cy, Gdiplus::Unit::UnitPixel);
 
     BLENDFUNCTION bf = { AC_SRC_OVER, 0, 200, AC_SRC_ALPHA };
 
@@ -58,7 +57,11 @@ void ShadowForm::move(POINT &pt)
 
 void ShadowForm::zoom(POINT& pt, SIZE& size)
 {
+    width_ = round(((float)size.cx / setup.size.cx) * width_);
+    height_ = round(((float)size.cy / setup.size.cy) * height_);
+
     setup.position = pt;
     setup.size = size;
+
     DrawShadowUI();
 }
