@@ -16,4 +16,6 @@ span.sys-btn {
     color: white;
     cursor: pointer;
     font-size: 35px;
+    float: right;
+    padding: 5px 0 0
 }
