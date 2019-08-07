@@ -3,17 +3,11 @@ var app = new Vue({
 
     data: {
         content: "",
-        activeIndex2: '1'
+        activePage: '1'
     },
 
     methods: {
         handleSelect(key, keyPath) {
-            console.log(key, keyPath);
-        },
-        handleOpen(key, keyPath) {
-            console.log(key, keyPath);
-        },
-        handleClose(key, keyPath) {
             console.log(key, keyPath);
         },
 
