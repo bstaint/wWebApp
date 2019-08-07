@@ -11,7 +11,7 @@ blinkWidget::blinkWidget() :
     zip_("../res/ui.zip"),
     cursor_type_(WkeCursorInfoPointer)
 {
-    setup.wndClassEx.lpszClassName = L"MINIBLINK_WIDGET";
+    setup.wndClassEx.lpszClassName = L"BlinkWidgetClass";
     setup.style |= ws::CHILD | ws::VISIBLE;
 #ifdef _DEBUG
 //    setup.exStyle |= wsx::CLIENTEDGE;
