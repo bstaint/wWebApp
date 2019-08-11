@@ -74,10 +74,12 @@ ZipUi::~ZipUi()
 ByteVector &ZipUi::getBytes(const std::string &path)
 {
 #ifdef _DEBUG
-    int pos = path_.rfind('/');
+    // ../res/ui.zip
+    static int pos = path_.rfind('/');
     if(pos != std::string::npos)
     {
         std::stringstream sstream;
+        // ../res/ + ui/js/app.js
         sstream << path_.substr(0, pos + 1) << path;
         readFromFile(sstream.str());
         return local_;
@@ -92,7 +94,6 @@ ByteVector &ZipUi::getBytes(const std::string &path)
     if((ret = unzLocateFile(zip_, path.c_str(), NULL)) == MZ_OK)
     {
         unz_file_info info;
-
         ret = unzGetCurrentFileInfo(zip_, &info, NULL, 0, NULL,0, NULL, 0);
         if(ret == MZ_OK)
         {
