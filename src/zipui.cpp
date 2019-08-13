@@ -2,7 +2,7 @@
 #include <sstream>
 #include <iostream>
 #include <fstream>
-#include <iterator>
+#include <cassert>
 
 int ZipUi::readFromZip(ByteVector &bytes)
 {
@@ -64,6 +64,9 @@ ZipUi::ZipUi(const std::string &path) :
     unzGetGlobalInfo(zip_, &info);
 
     numbers_ = info.number_entry;
+    pos_ = path_.rfind('/');
+
+    assert(pos_ != std::string::npos);
 }
 
 ZipUi::~ZipUi()
@@ -75,15 +78,12 @@ ByteVector &ZipUi::getBytes(const std::string &path)
 {
 #ifdef _DEBUG
     // ../res/ui.zip
-    static int pos = path_.rfind('/');
-    if(pos != std::string::npos)
-    {
-        std::stringstream sstream;
-        // ../res/ + ui/js/app.js
-        sstream << path_.substr(0, pos + 1) << path;
-        readFromFile(sstream.str());
-        return local_;
-    }
+    std::stringstream sstream;
+    // ../res/ + ui/js/app.js
+    sstream << path_.substr(0, pos_ + 1) << path;
+    readFromFile(sstream.str());
+
+    return local_;
 #else
     int ret = MZ_OK;
     auto it = map_.find(path);

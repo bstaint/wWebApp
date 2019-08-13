@@ -19,6 +19,7 @@ class ZipUi
     std::string path_;
 
     int numbers_;
+    int pos_;
 
 private:
     // 调试使用本地文件
