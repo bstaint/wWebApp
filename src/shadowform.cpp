@@ -1,11 +1,17 @@
 #include "shadowform.h"
 #include <sstream>
+#include "str.h"
+#include "executable.h"
 
 using namespace wl;
 using namespace Gdiplus;
 
 ShadowForm::ShadowForm() :
-    image_(L"../res/shadow.png"),
+#ifdef _DEBUG
+    image_(L"..\\res\\shadow.png"),
+#else
+    image_(str::to_ascii(executable::get_own_path() + L"\\res\\shadow.png")),
+#endif
     width_(6),
     height_(5)
 {

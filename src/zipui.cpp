@@ -57,7 +57,7 @@ ZipUi::ZipUi(const std::string &path) :
     zip_(nullptr),
     zero_(0),
     numbers_(0),
-#if _DEBUG
+#ifdef _DEBUG
     path_("..\\res\\ui.zip")
 #else
     path_(path)

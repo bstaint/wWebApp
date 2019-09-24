@@ -5,7 +5,7 @@
 
 void dllWkeInit()
 {
-#if _DEBUG
+#ifdef _DEBUG
     std::wstring node_dll_path = L"E:\\3rdParty\\extras\\miniblink\\node_v8_4_8.dll";
 #else
     std::wstring node_dll_path = wl::executable::get_own_path() + L"\\node_v8_4_8.dll";
