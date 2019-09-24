@@ -2,7 +2,6 @@
 #define BLINKWIDGET_H
 
 #include "precompiled.h"
-#include <string>
 #include <vector>
 #include <mutex>
 #include "zipui.h"

@@ -24,9 +24,10 @@ int ZipUi::readFromZip(ByteVector &bytes)
 void ZipUi::readFromFile(const std::string &path)
 {
     std::cout << "DEBUG: " << path << std::endl;
-//    std::streampos size;
+
     std::ifstream in(path, std::ios::binary);
-    local_.resize(0); // 重置vector大小
+    // 重置vector大小
+    local_.resize(0);
 
     if(!in.is_open()) return;
 
@@ -56,7 +57,11 @@ ZipUi::ZipUi(const std::string &path) :
     zip_(nullptr),
     zero_(0),
     numbers_(0),
+#if _DEBUG
+    path_("..\\res\\ui.zip")
+#else
     path_(path)
+#endif
 {
     zip_ = unzOpen(path.c_str());
 
@@ -64,7 +69,7 @@ ZipUi::ZipUi(const std::string &path) :
     unzGetGlobalInfo(zip_, &info);
 
     numbers_ = info.number_entry;
-    pos_ = path_.rfind('/');
+    pos_ = path_.rfind('\\');
 
     assert(pos_ != std::string::npos);
 }
@@ -76,10 +81,10 @@ ZipUi::~ZipUi()
 
 ByteVector &ZipUi::getBytes(const std::string &path)
 {
+    // release: ui.zip ui/js/app.js
+    // debug: ..\res\ + ui/js/app.js
 #ifdef _DEBUG
-    // ../res/ui.zip
     std::stringstream sstream;
-    // ../res/ + ui/js/app.js
     sstream << path_.substr(0, pos_ + 1) << path;
     readFromFile(sstream.str());
 
@@ -101,7 +106,6 @@ ByteVector &ZipUi::getBytes(const std::string &path)
             return map_[path];
         }
     }
-#endif
-
     return zero_;
+#endif
 }

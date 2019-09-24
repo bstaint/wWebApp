@@ -1,21 +1,24 @@
 #include "blinkwidget.h"
 #include "utility.h"
 #include "callback.h"
+#include "executable.h"
+#include "str.h"
 
 using namespace wl;
 
 std::once_flag blinkWidget::s_ready_flag;
 
+
 blinkWidget::blinkWidget() :
     webview_(wkeCreateWebView()),
-    zip_("../res/ui.zip"),
+    zip_(str::to_ascii(executable::get_own_path() + L"\\res\\ui.zip")),
     cursor_type_(WkeCursorInfoPointer)
 {
     setup.wndClassEx.lpszClassName = L"BlinkWidgetClass";
     setup.style |= WS_CHILD | WS_VISIBLE;
-#ifdef _DEBUG
-//    setup.exStyle |= wsx::CLIENTEDGE;
-#endif
+//#ifdef _DEBUG
+//    setup.exStyle |= WS_EX_CLIENTEDGE;
+//#endif
 
     OnWkeInit();
 

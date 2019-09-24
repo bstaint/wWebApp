@@ -12,5 +12,6 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#include <string>
 
 #endif // PRECOMPILED_H
