@@ -10,8 +10,8 @@ ShadowForm::ShadowForm() :
     height_(5)
 {
     setup.wndClassEx.lpszClassName = L"ShadowFromClass";
-    setup.style = ws::POPUP | ws::VISIBLE | ws::DISABLED;
-    setup.exStyle = wsx::TRANSPARENT_ | wsx::LAYERED | wsx::TOOLWINDOW | wsx::NOACTIVATE;
+    setup.style = WS_POPUP | WS_VISIBLE | WS_DISABLED;
+    setup.exStyle = WS_EX_TRANSPARENT | WS_EX_LAYERED | WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE;
 
     on_message(WM_CREATE, [&](params){
         DrawShadowUI();

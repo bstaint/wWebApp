@@ -12,7 +12,7 @@ blinkWidget::blinkWidget() :
     cursor_type_(WkeCursorInfoPointer)
 {
     setup.wndClassEx.lpszClassName = L"BlinkWidgetClass";
-    setup.style |= ws::CHILD | ws::VISIBLE;
+    setup.style |= WS_CHILD | WS_VISIBLE;
 #ifdef _DEBUG
 //    setup.exStyle |= wsx::CLIENTEDGE;
 #endif

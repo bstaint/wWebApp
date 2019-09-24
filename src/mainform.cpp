@@ -12,7 +12,7 @@ MainForm::MainForm()
 {
     setup.wndClassEx.lpszClassName = L"MainFromClass";
     // WS_THICKFRAME 有默认WM_SETCURSOR处理操作
-    setup.style |= (ws)WS_THICKFRAME;
+    setup.style |= WS_THICKFRAME;
     setup.size = {kWindowWidth, kWindowHeight};
 
     POINT pt = getWndCenter(GetDesktopWindow());
