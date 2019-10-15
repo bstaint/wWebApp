@@ -1,5 +1,6 @@
 #include "mainform.h"
 #include "utility.h"
+#include "resource.h"
 
 using namespace wl;
 
@@ -12,8 +13,12 @@ MainForm::MainForm()
 {
     setup.wndClassEx.lpszClassName = L"MainFromClass";
     // WS_THICKFRAME 有默认WM_SETCURSOR处理操作
+//    wl::icon ico = wl::icon::load_from_resource(IDI_ICON1, 64);
+
     setup.style |= WS_THICKFRAME;
     setup.size = {kWindowWidth, kWindowHeight};
+
+    setup.wndClassEx.hIcon = ::LoadIcon(GetModuleHandleW(nullptr), MAKEINTRESOURCE(IDI_ICON1));
 
     POINT pt = getWndCenter(GetDesktopWindow());
     setup.position = {pt.x - kWindowWidth/2, pt.y - kWindowHeight/2};

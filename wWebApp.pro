@@ -28,6 +28,8 @@ PRECOMPILED_HEADER = src/precompiled.h
 
 LIBS += -lgdiplus
 
+RC_FILE = src/app.rc
+
 win32-msvc*:QMAKE_CXXFLAGS += /utf-8
 
 include(E:/3rdParty/parser/zlib.pri)
