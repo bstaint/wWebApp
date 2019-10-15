@@ -7,17 +7,20 @@ using namespace wl;
 using namespace Gdiplus;
 
 ShadowForm::ShadowForm() :
-#ifdef _DEBUG
-    image_(L"..\\res\\shadow.png"),
-#else
-    image_(str::to_ascii(executable::get_own_path() + L"\\res\\shadow.png")),
-#endif
+    image_(nullptr),
     width_(6),
     height_(5)
 {
     setup.wndClassEx.lpszClassName = L"ShadowFromClass";
     setup.style = WS_POPUP | WS_VISIBLE | WS_DISABLED;
     setup.exStyle = WS_EX_TRANSPARENT | WS_EX_LAYERED | WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE;
+
+#ifdef _DEBUG
+    std::wstring path = L"..\\res\\shadow.png";
+#else
+    std::wstring path = executable::get_own_path() + L"\\res\\shadow.png";
+#endif
+    image_ = std::make_shared<Gdiplus::Image>(path.c_str());
 
     on_message(WM_CREATE, [&](params){
         DrawShadowUI();
@@ -42,7 +45,7 @@ void ShadowForm::DrawShadowUI()
     g.SetInterpolationMode(InterpolationModeNearestNeighbor);
     g.SetPixelOffsetMode(PixelOffsetModeHalf);
 
-    g.DrawImage(&image_, 0, 0, size.cx, size.cy);
+    g.DrawImage(image_.get(), 0, 0, size.cx, size.cy);
 
     BLENDFUNCTION bf = { AC_SRC_OVER, 0, 200, AC_SRC_ALPHA };
 

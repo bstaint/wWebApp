@@ -6,10 +6,10 @@
 
 class ShadowForm : public wl::window_control
 {
-    Gdiplus::Image image_;
-
     int width_;
     int height_;
+
+    std::shared_ptr<Gdiplus::Image> image_;
 
 private:
     void DrawShadowUI();

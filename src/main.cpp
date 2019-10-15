@@ -2,6 +2,7 @@
 #include "mainform.h"
 #include "internals/run.h"
 #include "executable.h"
+#include "file.h"
 
 void dllWkeInit()
 {
@@ -10,7 +11,9 @@ void dllWkeInit()
 #else
     std::wstring node_dll_path = wl::executable::get_own_path() + L"\\node_v8_4_8.dll";
 #endif
-    OutputDebugStringW(node_dll_path.c_str());
+    if (!wl::file::util::exists(node_dll_path))
+        ExitProcess(1);
+
     wkeSetWkeDllPath(node_dll_path.c_str());
     wkeInitialize();
 }
