@@ -58,7 +58,8 @@ bool MainForm::isWindowMove(const POINT &pt)
 bool MainForm::isWindowZoom(const SIZE &size)
 {
     bool bChanged = setup.size.cx != size.cx || setup.size.cy != size.cy;
-    if(bChanged)
+    // 检查是否最小化窗口
+    if(bChanged && !::IsIconic(hwnd()))
     {
         setup.size = size;
         return true;
